@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Genius Point – Everything a student needs in one place. Stationery, Art Supplies, Printing & More." />
+  <title>Genius Point – Student Stationery Shop</title>
+
+  <!-- ============================================================
+    FONTS
+    Using Google Fonts:
+    - "Nunito" for headings  → playful yet professional
+    - "Poppins" for body     → clean, modern, highly readable
+    To change fonts: swap the font names in the @import URL below
+    and update the CSS variables --font-heading / --font-body.
+  ============================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+      CSS VARIABLES — Global Design Tokens
+      Change colors, fonts, spacing here to restyle the whole site.
+      ============================================================ */
+    :root {
+      --blue-dark:   #1a3a6b;   /* deep navy  – navbar, footer bg */
+      --blue-mid:    #1e54b7;   /* brand blue – hero bg, accents  */
+      --blue-light:  #e8f0fb;   /* pale blue  – section bg tints  */
+      --yellow:      #ffd94a;   /* accent yellow – CTAs, badges   */
+      --yellow-dark: #f5c200;   /* darker yellow for hover states */
+      --white:       #ffffff;
+      --text-dark:   #1a1a2e;   /* main body text                 */
+      --text-muted:  #5a6a84;   /* secondary / caption text       */
+      --card-shadow: 0 4px 20px rgba(26,58,107,.10);
+      --radius:      14px;      /* global card border radius      */
+      --font-heading:'Nunito', sans-serif;
+      --font-body:   'Poppins', sans-serif;
+    }
+
+    /* ============================================================
+      RESET & BASE
+      ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }   /* enables smooth anchor scrolling */
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+    a   { text-decoration: none; color: inherit; }
+
+    /* ── Utility: section title ── */
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      color: var(--blue-dark);
+      text-align: center;
+      margin-bottom: .5rem;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .95rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Utility: CTA / primary button ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--yellow);
+      color: var(--blue-dark);
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: .95rem;
+      padding: .75rem 1.6rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(255,217,74,.45);
+    }
+    .btn-primary:hover {
+      background: var(--yellow-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(255,217,74,.55);
+    }
+
+    /* ── Utility: secondary (outline) button ── */
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: transparent;
+      color: var(--blue-mid);
+      border: 2px solid var(--blue-mid);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: .85rem;
+      padding: .5rem 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-outline:hover {
+      background: var(--blue-mid);
+      color: var(--white);
+    }
+
+    /* ── Utility: order button (product cards) ── */
+    .btn-order {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--blue-mid);
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: .82rem;
+      padding: .5rem 1.1rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      margin-top: auto;   /* push button to bottom of card */
+    }
+    .btn-order:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+    /* ============================================================
+      1. NAVBAR
+      ── HOW IT WORKS ──
+      - Position: sticky, top: 0  → stays visible while scrolling
+      - JS adds class "scrolled" when user scrolls > 20px
+        (adds a stronger shadow to indicate floating)
+      - Hamburger menu toggles ".open" class on #nav-links for mobile
+      ── TO CUSTOMIZE ──
+      - Change logo text: look for <span class="logo-text">Genius Point</span>
+      - Add/remove nav links inside <ul id="nav-links">
+      - Change phone number in the "Call" button
+      ============================================================ */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--blue-dark);
+      padding: .85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      transition: box-shadow .3s;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.3); }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: var(--yellow);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--blue-dark);
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -.3px;
+    }
+    .logo-text span { color: var(--yellow); }
+
+    /* Desktop nav links */
+    #nav-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    #nav-links a {
+      color: rgba(255,255,255,.82);
+      font-size: .9rem;
+      font-weight: 500;
+      transition: color .2s;
+      position: relative;
+    }
+    #nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--yellow);
+      transition: width .25s;
+    }
+    #nav-links a:hover { color: var(--white); }
+    #nav-links a:hover::after { width: 100%; }
+
+    /* Call button inside nav */
+    .nav-call {
+      background: var(--yellow);
+      color: var(--blue-dark) !important;
+      font-weight: 700 !important;
+      padding: .4rem 1.1rem;
+      border-radius: 50px;
+    }
+    .nav-call::after { display: none !important; }
+    .nav-call:hover { background: var(--yellow-dark); }
+
+    /* Hamburger icon (mobile only) */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2.5px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    /* ============================================================
+      2. HERO SECTION
+      ── HOW IT WORKS ──
+      - Full-viewport gradient background (blue-dark → blue-mid)
+      - Animated floating shapes (CSS keyframe "float")
+      - CTA button links to WhatsApp (update the number below)
+      ── TO CUSTOMIZE ──
+      - Change heading/subtitle text directly in HTML
+      - Change WhatsApp number: find "wa.me/91XXXXXXXXXX" and replace
+        with your actual 10-digit number (e.g., wa.me/919876543210)
+      ============================================================ */
+    #hero {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 60%, #2d7dd2 100%);
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative floating circles in background */
+    #hero::before, #hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: .07;
+    }
+    #hero::before {
+      width: 500px; height: 500px;
+      background: var(--yellow);
+      top: -120px; right: -100px;
+      animation: float 7s ease-in-out infinite;
+    }
+    #hero::after {
+      width: 300px; height: 300px;
+      background: var(--white);
+      bottom: -80px; left: -60px;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-20px); }
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,217,74,.18);
+      border: 1px solid rgba(255,217,74,.5);
+      color: var(--yellow);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      color: var(--white);
+      line-height: 1.18;
+      margin-bottom: 1rem;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--yellow);
+    }
+
+    .hero-sub {
+      color: rgba(255,255,255,.8);
+      font-size: clamp(.95rem, 2vw, 1.1rem);
+      margin-bottom: 2rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .stat {
+      text-align: center;
+      color: var(--white);
+    }
+    .stat-num {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--yellow);
+      display: block;
+    }
+    .stat-label { font-size: .8rem; opacity: .75; }
+
+    /* ============================================================
+      3. HIGHLIGHTS / BADGES ROW
+      ── HOW IT WORKS ──
+      - Three highlighted selling points shown as icon cards
+      - Positioned just below the hero for quick trust-building
+      ── TO CUSTOMIZE ──
+      - Change emoji icons, titles, or descriptions in the HTML
+      ============================================================ */
+    #highlights {
+      background: var(--white);
+      padding: 3.5rem 2rem;
+    }
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .highlight-card {
+      background: var(--blue-light);
+      border-radius: var(--radius);
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .highlight-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow);
+    }
+    .highlight-icon {
+      font-size: 2.2rem;
+      margin-bottom: .8rem;
+    }
+    .highlight-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      color: var(--blue-dark);
+      margin-bottom: .4rem;
+    }
+    .highlight-card p { font-size: .85rem; color: var(--text-muted); }
+
+    /* ============================================================
+      4. ABOUT THE OWNER
+      ── HOW IT WORKS ──
+      - Two-column layout: image left, text right (reversed on mobile)
+      - Replace the placeholder <div class="owner-img-placeholder">
+        with a real <img> tag once you have a photo.
+      ── TO CUSTOMIZE ──
+      - Change owner name, description, and experience years
+      - Replace image placeholder with: <img src="owner.jpg" alt="Owner Name">
+      ============================================================ */
+    #about {
+      background: var(--blue-light);
+      padding: 5rem 2rem;
+    }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .owner-img-wrap {
+      position: relative;
+    }
+
+    /* This is a placeholder — replace with <img src="your-photo.jpg"> */
+    .owner-img-placeholder {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.5);
+      font-size: 4rem;
+      box-shadow: var(--card-shadow);
+      gap: .5rem;
+    }
+    .owner-img-placeholder small {
+      font-size: .75rem;
+      font-family: var(--font-body);
+      opacity: .7;
+    }
+
+    /* Floating experience badge */
+    .owner-badge {
+      position: absolute;
+      bottom: -14px;
+      right: -14px;
+      background: var(--yellow);
+      color: var(--blue-dark);
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: .85rem;
+      padding: .8rem 1.2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(255,217,74,.4);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .about-text .tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--blue-dark);
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .3rem .9rem;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .about-text h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--blue-dark);
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+    .about-text p {
+      color: var(--text-muted);
+      font-size: .93rem;
+      margin-bottom: 1rem;
+    }
+    .trust-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .85rem;
+      color: var(--blue-dark);
+      font-weight: 600;
+    }
+    .trust-item span { font-size: 1rem; }
+
+    /* ============================================================
+      5. PRODUCTS SECTION
+      ── HOW IT WORKS ──
+      - Products displayed in a responsive grid (auto-fill columns)
+      - Each card has: emoji icon, name, description, order button
+      - "Order" buttons currently link to WhatsApp with a pre-filled
+        message. Update the phone number in the href.
+      ── TO CUSTOMIZE ──
+      - TO ADD A PRODUCT: copy a <div class="product-card"> block
+        and change the emoji, name, description
+      - TO ADD A PRODUCT IMAGE: replace the <div class="prod-img">
+        with <img src="your-image.jpg" class="prod-img-real" alt="...">
+        and add CSS: .prod-img-real { width:100%; height:180px; object-fit:cover; }
+      - TO CHANGE WHATSAPP NUMBER: find all "wa.me/91XXXXXXXXXX"
+        and replace with your number (e.g., 919876543210)
+      ============================================================ */
+    #products {
+      padding: 5rem 2rem;
+      background: var(--white);
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .product-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(26,58,107,.15);
+    }
+
+    /* Coloured icon area at top of product card */
+    .prod-img {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      background: var(--blue-light);
+    }
+
+    .prod-body {
+      padding: 1rem 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .prod-category {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--blue-mid);
+      margin-bottom: .3rem;
+    }
+    .prod-name {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--blue-dark);
+      margin-bottom: .3rem;
+    }
+    .prod-desc {
+      font-size: .8rem;
+      color: var(--text-muted);
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    /* ============================================================
+      6. SERVICES SECTION
+      ── HOW IT WORKS ──
+      - Three service tiles in a row
+      - Each tile uses a gradient background for visual variety
+      ── TO CUSTOMIZE ──
+      - Change service names, descriptions, icons
+      - Add or remove tiles as needed
+      ============================================================ */
+    #services {
+      background: var(--blue-dark);
+      padding: 5rem 2rem;
+    }
+    #services .section-title { color: var(--white); }
+    #services .section-sub   { color: rgba(255,255,255,.6); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .service-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: background .25s, transform .2s;
+    }
+    .service-card:hover {
+      background: rgba(255,255,255,.1);
+      transform: translateY(-4px);
+    }
+    .service-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .service-card h3 {
+      font-family: var(--font-heading);
+      color: var(--yellow);
+      font-size: 1.1rem;
+      margin-bottom: .5rem;
+    }
+    .service-card p { color: rgba(255,255,255,.65); font-size: .88rem; }
+
+    /* ============================================================
+      7. CONTACT SECTION
+      ── HOW IT WORKS ──
+      - Shows phone, WhatsApp, address info cards
+      - Map placeholder: replace the <div class="map-placeholder">
+        with an actual Google Maps embed <iframe> (see comment inside)
+      ── TO CUSTOMIZE ──
+      - Update phone number, address, working hours
+      - For Google Maps embed:
+        1. Go to maps.google.com → search your shop
+        2. Click Share → Embed a map → Copy HTML
+        3. Paste the <iframe> tag replacing the map-placeholder div
+      ============================================================ */
+    #contact {
+      padding: 5rem 2rem;
+      background: var(--blue-light);
+    }
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .contact-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--card-shadow);
+      transition: transform .2s;
+    }
+    .contact-card:hover { transform: translateX(4px); }
+
+    .contact-icon {
+      width: 44px; height: 44px;
+      background: var(--blue-light);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .contact-card h4 {
+      font-family: var(--font-heading);
+      font-size: .9rem;
+      color: var(--blue-dark);
+      margin-bottom: .15rem;
+    }
+    .contact-card p  { font-size: .82rem; color: var(--text-muted); }
+    .contact-card a  { color: var(--blue-mid); font-weight: 600; font-size: .82rem; }
+
+    /* WhatsApp card gets a green accent */
+    .contact-card.wa .contact-icon { background: #e6f9ee; }
+
+    /* Map placeholder — replace this with your actual Google Maps iframe */
+    .map-placeholder {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+      border-radius: var(--radius);
+      height: 100%;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.7);
+      font-size: 3rem;
+      gap: .6rem;
+      box-shadow: var(--card-shadow);
+
+      /* ── HOW TO REPLACE WITH REAL MAP ──
+         1. Visit maps.google.com
+         2. Search "Genius Point [your address]"
+         3. Click the Share icon → "Embed a map"
+         4. Copy the <iframe> code
+         5. Delete this entire .map-placeholder div
+         6. Paste the iframe where this div was
+         7. Add style="width:100%; height:100%; border-radius:14px; border:0"
+            to the iframe attributes
+      */
+    }
+    .map-placeholder p {
+      font-size: .8rem;
+      font-family: var(--font-body);
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    /* ============================================================
+      8. FLOATING ACTION BUTTONS (WhatsApp + Call)
+      ── HOW IT WORKS ──
+      - Fixed position, bottom-right corner
+      - Two stacked buttons: WhatsApp (green) and Call (blue)
+      - Tooltip labels appear on hover
+      ── TO CUSTOMIZE ──
+      - Change phone number in href (both buttons)
+      - WhatsApp: use "https://wa.me/91XXXXXXXXXX"
+      - Call:     use "tel:+91XXXXXXXXXX"
+      ============================================================ */
+    .fab-group {
+      position: fixed;
+      bottom: 2rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      z-index: 900;
+    }
+    .fab {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+    .fab:hover { transform: scale(1.12); box-shadow: 0 6px 22px rgba(0,0,0,.3); }
+    .fab-wa   { background: #25d366; color: white; }
+    .fab-call { background: var(--blue-mid); color: white; }
+
+    /* Tooltip label */
+    .fab::before {
+      content: attr(data-tip);
+      position: absolute;
+      right: 60px;
+      background: var(--blue-dark);
+      color: var(--white);
+      font-size: .75rem;
+      font-family: var(--font-body);
+      white-space: nowrap;
+      padding: .3rem .7rem;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .fab:hover::before { opacity: 1; }
+
+    /* Pulse animation on WhatsApp button */
+    .fab-wa { animation: pulse-wa 2.5s ease-in-out infinite; }
+    @keyframes pulse-wa {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,.5); }
+      50%       { box-shadow: 0 0 0 10px rgba(37,211,102,0); }
+    }
+
+    /* ============================================================
+      9. FOOTER
+      ── HOW IT WORKS ──
+      - Three columns: brand info, quick links, contact
+      - Bottom bar with copyright
+      ── TO CUSTOMIZE ──
+      - Update shop name, address, phone, quick links
+      - Add/remove social media icons as needed
+      ============================================================ */
+    #footer {
+      background: var(--blue-dark);
+      color: rgba(255,255,255,.75);
+      padding: 4rem 2rem 1.5rem;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 2.5rem;
+      max-width: 1000px;
+      margin: 0 auto 2.5rem;
+    }
+    .footer-brand p { font-size: .87rem; line-height: 1.7; margin: 1rem 0; }
+
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      color: var(--yellow);
+      font-size: 1rem;
+      margin-bottom: 1.1rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: .55rem; }
+    .footer-col ul li a {
+      color: rgba(255,255,255,.65);
+      font-size: .85rem;
+      transition: color .2s;
+    }
+    .footer-col ul li a:hover { color: var(--yellow); }
+
+    .footer-contact li {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      font-size: .85rem;
+      margin-bottom: .7rem;
+    }
+    .footer-contact li span { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding-top: 1.2rem;
+      text-align: center;
+      font-size: .8rem;
+      color: rgba(255,255,255,.4);
+    }
+    .footer-bottom a { color: var(--yellow); }
+
+    /* ============================================================
+      RESPONSIVE STYLES (Mobile)
+      ── HOW IT WORKS ──
+      All multi-column grids collapse to single column below 768px.
+      The hamburger menu replaces the horizontal nav links.
+      ── BREAKPOINTS ──
+      - 768px → tablet / large phone landscape
+      - 480px → small phone portrait
+      ============================================================ */
+    @media (max-width: 768px) {
+      /* Hamburger appears, nav links hidden until toggled */
+      .hamburger  { display: flex; }
+      #nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: var(--blue-dark);
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 1.5rem 1.5rem;
+        gap: .2rem;
+        display: none;          /* hidden by default   */
+        box-shadow: 0 8px 20px rgba(0,0,0,.25);
+      }
+      #nav-links.open { display: flex; }  /* toggled by JS */
+      #nav-links a { padding: .6rem 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+      #navbar { position: relative; }    /* let dropdown overflow */
+
+      /* Hero */
+      .hero-stats { gap: 1.2rem; }
+
+      /* About */
+      .about-inner { grid-template-columns: 1fr; }
+      .owner-img-wrap { max-width: 320px; margin: 0 auto; }
+
+      /* Contact */
+      .contact-inner { grid-template-columns: 1fr; }
+      .map-placeholder { min-height: 220px; }
+
+      /* Footer */
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 480px) {
+      #navbar { padding: .75rem 1rem; }
+      #hero   { padding: 3rem 1rem; }
+      #about, #products, #services, #contact, #highlights { padding: 3rem 1rem; }
+      #footer { padding: 3rem 1rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#1e54b7">
+
+  <!-- ============================================================
+    NAVBAR
+    ── WHERE TO EDIT ──
+    • Logo text         → .logo-text  (change "Genius" and "Point")
+    • Menu items        → <ul id="nav-links">  (add/remove <li>)
+    • Call button text  → last <li> inside nav-links
+    • Call phone number → href="tel:+91XXXXXXXXXX"  ← replace number
+    ============================================================ -->
+  <nav id="navbar" aria-label="Main navigation">
+    <a href="#" class="logo" aria-label="Genius Point Home">
+      <div class="logo-icon">GP</div>
+      <!-- ── To show a logo image instead of "GP" text:
+           Replace the <div class="logo-icon"> above with:
+           <img src="logo.png" alt="Genius Point" style="height:38px; border-radius:10px;">
+      ── -->
+      <span class="logo-text"><em>Genius</em> Point</span>
+    </a> 
+
+    <!-- Hamburger button (visible on mobile only) -->
+    <!-- ── JS toggles class "open" on #nav-links when clicked ── -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="nav-links" role="list">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <!-- ── Call button: change the number here ── -->
+      <li><a href="tel:+919558789004" class="nav-call">📞 Call Now</a></li>
+    </ul>
+  </nav>
+  <!-- END NAVBAR -->
+
+
+  <!-- ============================================================
+    HERO SECTION
+    ── WHERE TO EDIT ──
+    • Main headline   → .hero-title   (keep <em> for yellow word)
+    • Subtitle text   → .hero-sub
+    • WhatsApp number → "wa.me/91XXXXXXXXXX"  ← replace with yours
+      Example: wa.me/919876543210  (country code 91 + 10 digit number)
+    • Badge text      → .hero-badge
+    • Stats numbers   → each .stat-num and .stat-label
+    ============================================================ -->
+  <section id="hero" aria-label="Hero banner">
+    <div class="hero-content">
+      <span class="hero-badge">🎒 Ahmedabad's Favourite Stationery Shop</span>
+
+      <h1 class="hero-title">
+        Everything a Student<br>Needs in <em>One Place</em>
+      </h1>
+
+      <p class="hero-sub">
+        Stationery · Art Supplies · Printing · Sports · Toys &amp; More
+      </p>
+
+      <div class="hero-btns">
+        <!-- ── Primary WhatsApp order button: update number ── -->
+        <a href="https://wa.me/919558789004?text=Hi%20Genius%20Point!%20I%20want%20to%20place%20an%20order."
+           target="_blank" rel="noopener" class="btn-primary">
+          💬 Order on WhatsApp
+        </a>
+        <!-- ── Secondary button scrolls to products ── -->
+        <a href="#products" class="btn-outline" style="color:white; border-color:rgba(255,255,255,.5);">
+          🛍️ See Products
+        </a>
+      </div>
+
+      <!-- Quick trust stats — change numbers as needed -->
+      <div class="hero-stats" aria-label="Shop highlights">
+        <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Products</span></div>
+        <div class="stat"><span class="stat-num">10+</span><span class="stat-label">Years of Service</span></div>
+        <div class="stat"><span class="stat-num">1000+</span><span class="stat-label">Happy Students</span></div>
+      </div>
+    </div>
+  </section>
+  <!-- END HERO -->
+
+
+  <!-- ============================================================
+    HIGHLIGHTS / SELLING POINTS
+    ── WHERE TO EDIT ──
+    • Change the 3 cards: emoji, title, description
+    • Add more cards: copy a .highlight-card block
+    ============================================================ -->
+  <section id="highlights" aria-label="Key highlights">
+    <h2 class="section-title">Why Choose Genius Point?</h2>
+    <p class="section-sub">Trusted by students, parents, and schools across the area</p>
+
+    <div class="highlights-grid">
+      <div class="highlight-card">
+        <div class="highlight-icon">🎒</div>
+        <h3>Student Kits</h3>
+        <p>Ready-made kits for all grades — everything packed, nothing forgotten.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">🏫</div>
+        <h3>Best for School &amp; College</h3>
+        <p>From notebooks to art supplies, we stock exactly what your school list needs.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">💰</div>
+        <h3>Affordable Prices</h3>
+        <p>Quality brands at the best local prices. Bulk discounts available for schools.</p>
+      </div>
+    </div>
+  </section>
+  <!-- END HIGHLIGHTS -->
+
+
+  <!-- ============================================================
+    ABOUT THE OWNER
+    ── WHERE TO EDIT ──
+    • Owner name            → change "Raju Bhai" to real name
+    • Owner description     → edit the two <p> paragraphs
+    • Experience years      → .owner-badge (change "10+ Years")
+    • Replace placeholder   → Swap .owner-img-placeholder div with:
+        <img src="owner-photo.jpg" alt="Owner Name"
+             style="width:100%; border-radius:24px; object-fit:cover;">
+    • Trust bullets         → .trust-row items
+    ============================================================ -->
+  <section id="about" aria-label="About the owner">
+    <div class="about-inner">
+
+      <!-- Owner image column -->
+      <div class="owner-img-wrap">
+        <!-- ── Replace this placeholder div with a real <img> tag.
+             See comment in CSS section #about for instructions. ── -->
+        <div class="owner-img-placeholder" role="img" aria-label="Shop owner photo placeholder">
+          👤
+          <small>Add owner photo here</small>
+        </div>
+        <div class="owner-badge">⭐ 4+ Years<br>of Experience</div>
+      </div>
+
+      <!-- About text column -->
+      <div class="about-text">
+        <span class="tag">Meet the Owner</span>
+        <!-- ── Change owner name below ── -->
+        <h2>Hi, I'm <span style="color:var(--blue-mid)">Chauhan Anand Singh</span> 👋<br>Your Friendly Stationer</h2>
+        <!-- ── Update this paragraph with real info about the owner ── -->
+        <p>
+          I started Genius Point with a simple mission: make sure every student in our neighbourhood has easy access to quality study materials at honest prices. With over a decade of experience serving students and schools, I personally handpick every product on our shelves.
+        </p>
+        <p>
+          Whether you need a single pen or bulk supplies for your entire school, I'm here to help. Come visit us or just drop a WhatsApp message — I'll get back to you personally!
+        </p>
+
+        <!-- Trust badges — change text or icons as needed -->
+        <div class="trust-row">
+          <div class="trust-item"><span>✅</span> Genuine Products</div>
+          <div class="trust-item"><span>💰</span> Affordable Prices</div>
+          <div class="trust-item"><span>💬</span> WhatsApp Orders</div>
+          <div class="trust-item"><span>🏫</span> School Bulk Orders</div>
+        </div>
+
+        <!-- WhatsApp button — update the number -->
+        <a href="https://wa.me/919558789004?text=Hi%20Raju%20Bhai!" target="_blank"
+           rel="noopener" class="btn-primary" style="margin-top:1.8rem">
+          💬 Chat with Me
+        </a>
+      </div>
+
+    </div>
+  </section>
+  <!-- END ABOUT -->
+
+
+  <!-- ============================================================
+    PRODUCTS SECTION
+    ── WHERE TO EDIT ──
+    • To change a product: edit emoji, category, name, description
+    • To add a product: copy any .product-card block and paste it
+      inside .products-grid
+    • To remove a product: delete its .product-card block
+    • Order button WhatsApp links:
+      Each button has href="https://wa.me/91XXXXXXXXXX?text=..."
+      Replace "91XXXXXXXXXX" with your number
+      Replace "%20" encoded text with your product name if desired
+    • To add a real product image:
+      Replace <div class="prod-img">EMOJI</div> with:
+      <img src="product.jpg" alt="Product" class="prod-img"
+           style="height:140px; object-fit:cover; width:100%;">
+    ============================================================ -->
+  <section id="products" aria-label="Products">
+    <h2 class="section-title">Our Products</h2>
+    <p class="section-sub">Handpicked quality brands for every student's need</p>
+
+    <div class="products-grid">
+
+      <!-- ── PRODUCT 1: Notebooks ── -->
+      <article class="product-card">
+        <div class="prod-img">📓</div>
+        <div class="prod-body">
+          <span class="prod-category">Stationery</span>
+          <h3 class="prod-name">Classmate Notebooks</h3>
+          <p class="prod-desc">Ruled, unruled, square, and practical copies. All sizes and pages available.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Classmate%20Notebooks."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 2: Pens ── -->
+      <article class="product-card">
+        <div class="prod-img">🖊️</div>
+        <div class="prod-body">
+          <span class="prod-category">Writing</span>
+          <h3 class="prod-name">Pens – DOMS &amp; More</h3>
+          <p class="prod-desc">Ball pens, gel pens, ink pens. DOMS, Reynolds, Cello, and other top brands.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Pens."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 3: Pencils ── -->
+      <article class="product-card">
+        <div class="prod-img">✏️</div>
+        <div class="prod-body">
+          <span class="prod-category">Writing</span>
+          <h3 class="prod-name">Pencils &amp; Erasers</h3>
+          <p class="prod-desc">HB, 2B pencils. Regular, dust-free, and electric erasers available.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Pencils%20and%20Erasers."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 4: Art Supplies ── -->
+      <article class="product-card">
+        <div class="prod-img">🎨</div>
+        <div class="prod-body">
+          <span class="prod-category">Art &amp; Craft</span>
+          <h3 class="prod-name">Art Supplies</h3>
+          <p class="prod-desc">Watercolors, sketch pens, oil pastels, drawing books, brushes, and more.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Art%20Supplies."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 5: Sports Items ── -->
+      <article class="product-card">
+        <div class="prod-img">⚽</div>
+        <div class="prod-body">
+          <span class="prod-category">Sports</span>
+          <h3 class="prod-name">Sports Items</h3>
+          <p class="prod-desc">Balls, badminton rackets, skipping ropes, and other play equipment for students.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Sports%20Items."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 6: Toys & Dolls ── -->
+      <article class="product-card">
+        <div class="prod-img">🧸</div>
+        <div class="prod-body">
+          <span class="prod-category">Toys</span>
+          <h3 class="prod-name">Toys &amp; Dolls</h3>
+          <p class="prod-desc">Educational toys, dolls, puzzles, and fun items for kids of all ages.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20Toys%20and%20Dolls."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 7: Geometry Box / Math Kit ── -->
+      <article class="product-card">
+        <div class="prod-img">📐</div>
+        <div class="prod-body">
+          <span class="prod-category">Math Tools</span>
+          <h3 class="prod-name">Geometry Box</h3>
+          <p class="prod-desc">Complete math kits with compass, divider, scale, and protractor.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20a%20Geometry%20Box."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+      <!-- ── PRODUCT 8: Bags & Accessories ── -->
+      <article class="product-card">
+        <div class="prod-img">🎒</div>
+        <div class="prod-body">
+          <span class="prod-category">Accessories</span>
+          <h3 class="prod-name">School Bags</h3>
+          <p class="prod-desc">Lightweight, durable school bags in various sizes and designs.</p>
+          <a href="https://wa.me/919558789004?text=Hi!%20I%20want%20to%20order%20a%20School%20Bag."
+             target="_blank" rel="noopener" class="btn-order">🛒 Order Now</a>
+        </div>
+      </article>
+
+    </div>
+    <!-- ── To add more products: copy any article.product-card block above ── -->
+  </section>
+  <!-- END PRODUCTS -->
+
+
+  <!-- ============================================================
+    SERVICES SECTION
+    ── WHERE TO EDIT ──
+    • Change service titles, descriptions, and icons
+    • Add or remove .service-card blocks
+    ============================================================ -->
+  <section id="services" aria-label="Services">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-sub">More than just a stationery shop — we're your complete educational partner</p>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="service-icon">🖨️</div>
+        <h3>Printing Facility</h3>
+        <p>Black &amp; white and colour printing. Notes, projects, certificates, and more — fast and affordable.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🏫</div>
+        <h3>School Supplies</h3>
+        <p>All stationery on your school's official list, available right here. Just bring the list!</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">📦</div>
+        <h3>Bulk Orders</h3>
+        <p>Special pricing for bulk orders from schools, colleges, and coaching centres. Contact us for rates.</p>
+      </div>
+
+    </div>
+  </section>
+  <!-- END SERVICES -->
+
+
+  <!-- ============================================================
+    CONTACT SECTION
+    ── WHERE TO EDIT ──
+    • Phone number    → change "XXXXXXXXXX" in all phone/wa links
+    • Address         → change address text in the address card
+    • Working hours   → change hours text in the clock card
+    • Map             → replace .map-placeholder div with Google Maps iframe
+      (see instructions in the CSS comment above)
+    ============================================================ -->
+  <section id="contact" aria-label="Contact us">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Visit us in store or reach out — we're always happy to help!</p>
+
+    <div class="contact-inner">
+
+      <!-- Left: Contact info cards -->
+      <div class="contact-info">
+
+        <!-- Phone card — update number in href and display text -->
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <div>
+            <h4>Call Us</h4>
+            <!-- ── Replace XXXXXXXXXX with real phone number ── -->
+            <a href="tel:+919558789004">+91 95587 89004</a>
+            <p>Mon – Sat · 9:00 AM – 8:00 PM</p>
+          </div>
+        </div>
+
+        <!-- WhatsApp card — update number -->
+        <div class="contact-card wa">
+          <div class="contact-icon">💬</div>
+          <div>
+            <h4>WhatsApp Order</h4>
+            <!-- ── Replace XXXXXXXXXX with real WhatsApp number ── -->
+            <a href="https://wa.me/919558789004?text=Hi%20Genius%20Point!" target="_blank" rel="noopener">
+              Chat on WhatsApp
+            </a>
+            <p>Usually replies within minutes</p>
+          </div>
+        </div>
+
+        <!-- Address card — update full address -->
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Visit Our Shop</h4>
+            <!-- ── Replace with real shop address ── -->
+            <p>Parshwanath Township Bus Stand,<br>
+                Krishnanagar, Nava Naroda,<br>
+                Ahmedabad, Gujarat – 380038</p>
+          </div>
+        </div>
+
+        <!-- Hours card -->
+        <div class="contact-card">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <h4>Working Hours</h4>
+            <!-- ── Update real hours ── -->
+            <p>Monday – Saturday: 9 AM – 10 PM</p>
+            <p>Sunday: 10 AM – 2 PM</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Map — replace with real Google Maps iframe -->
+      <div class="map-placeholder" role="img" aria-label="Map placeholder">
+        🗺️
+        <p style="font-size:.85rem; opacity:.7; text-align:center; padding:0 1.5rem">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3671.113503162395!2d72.652!3d23.0563!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e86db1576b6a7%3A0x1d577065c7a2018a!2sParshwanath%20Township!5e0!3m2!1sen!2sin!4v1775385393576!5m2!1sen!2sin" 
+                style="width:100%; height:100%; border:0; border-radius:14px;"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </p>
+      </div>
+
+    </div>
+  </section>
+  <!-- END CONTACT -->
+
+
+  <!-- ============================================================
+    FLOATING ACTION BUTTONS
+    ── WHERE TO EDIT ──
+    • WhatsApp: change "91XXXXXXXXXX" to your number in both buttons
+    • Call:     change "91XXXXXXXXXX" to your number
+    • To hide one button: add style="display:none" to that .fab
+    ============================================================ -->
+  <div class="fab-group" aria-label="Quick contact buttons">
+    <!-- WhatsApp floating button -->
+    <a href="https://wa.me/919558789004?text=Hi%20Genius%20Point!" target="_blank"
+       rel="noopener" class="fab fab-wa" data-tip="Order on WhatsApp" aria-label="WhatsApp">
+      <!-- WhatsApp SVG icon -->
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </a>
+    <!-- Call floating button -->
+    <a href="tel:+919558789004" class="fab fab-call" data-tip="Call Us" aria-label="Call">
+      📞
+    </a>
+  </div>
+  <!-- END FLOATING BUTTONS -->
+
+
+  <!-- ============================================================
+    FOOTER
+    ── WHERE TO EDIT ──
+    • Shop tagline    → footer-brand paragraph
+    • Quick links     → <ul> in "Quick Links" column
+    • Contact info    → footer-contact list
+    • Copyright year  → footer-bottom (change the year)
+    • Social links    → add your actual social media URLs
+    ============================================================ -->
+  <footer id="footer" aria-label="Footer">
+    <div class="footer-inner">
+
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon">GP</div>
+          <span class="logo-text"><em>Genius</em> Point</span>
+        </a>
+        <p>Your trusted neighbourhood stationery shop. Quality products, honest prices, and friendly service for every student.</p>
+        <!-- ── Add social media icons here if needed ── -->
+      </div>
+
+      <!-- Quick Links column -->
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <!-- ── Add/remove links as your site grows ── -->
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info column -->
+      <div class="footer-col">
+        <h4>Contact Info</h4>
+        <ul class="footer-contact">
+          <li>
+            <span>📍</span>
+            <!-- ── Update address ── -->
+            <span>Parshwanath Township Bus Stand,<br>
+                    Krishnanagar, Nava Naroda,<br>
+                    Ahmedabad, Gujarat – 380038</span>
+          </li>
+          <li>
+            <span>📞</span>
+            <!-- ── Update phone number ── -->
+            <a href="tel:+919558789004">+91 95587 89004</a>
+          </li>
+          <li>
+            <span>💬</span>
+            <!-- ── Update WhatsApp number ── -->
+            <a href="https://wa.me/919558789004" target="_blank" rel="noopener">WhatsApp Us</a>
+          </li>
+          <li>
+            <span>🕐</span>
+            <!-- ── Update hours ── -->
+            <span>Mon–Sat: 9AM–8PM · Sun: 10AM–2PM</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <!-- ── Update year and name ── -->
+      &copy; 2025 Genius Point. All rights reserved.
+      Built with ❤️ for students.
+    </div>
+  </footer>
+  <!-- END FOOTER -->
+
+
+  <!-- ============================================================
+    JAVASCRIPT
+    ── WHAT IT DOES ──
+    1. Sticky navbar shadow: adds "scrolled" class when page scrolls > 20px
+    2. Hamburger toggle: shows/hides mobile nav menu
+    3. Close mobile menu when a nav link is clicked (smooth UX)
+    4. Scroll-reveal animation: fades in cards as user scrolls
+    ── WHERE TO EDIT ──
+    - Scroll threshold (20px) → change the number in the scroll listener
+    - Animation delay timing  → change the multiplier "* 100" for stagger
+  ============================================================ -->
+  <script>
+    // ── 1. Navbar scroll shadow ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ── 2. Hamburger menu toggle ──
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    // ── 3. Close mobile menu when any nav link is clicked ──
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ── 4. Scroll-reveal: fade-in animation on scroll ──
+    // Targets: product cards, service cards, highlight cards, contact cards
+    const revealEls = document.querySelectorAll(
+      '.product-card, .service-card, .highlight-card, .contact-card'
+    );
+
+    // Initial state: invisible and shifted down
+    revealEls.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity .5s ease, transform .5s ease';
+    });
+
+    // IntersectionObserver: triggers when element enters viewport
+    // threshold: 0.1 = animate when 10% of element is visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          // Stagger delay: each card animates 100ms after the previous
+          setTimeout(() => {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }, i * 80);   // ← change 80 to adjust stagger speed
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+    .then(() => console.log("Service Worker Registered"));
+    }
+  </script>
+</body>
+</html>
