@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genius Point – You're Offline</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #1a3a6b;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      margin: 0;
+    }
+    .card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      max-width: 420px;
+    }
+    .icon { font-size: 4rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: .5rem; color: #ffd94a; }
+    p  { font-size: .95rem; opacity: .75; margin-bottom: 1.5rem; line-height: 1.6; }
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #25d366;
+      color: white;
+      font-weight: 700;
+      font-size: .9rem;
+      padding: .75rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .phone {
+      display: block;
+      color: #ffd94a;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+    }
+    .retry-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: rgba(255,255,255,.1);
+      color: white;
+      padding: .6rem 1.4rem;
+      border-radius: 50px;
+      font-size: .85rem;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>No Internet Connection</h1>
+    <p>It looks like you're offline right now. But you can still contact Genius Point directly!</p>
+
+    <a href="https://wa.me/919558789004?text=Hi%20Genius%20Point!" class="wa-btn">
+      💬 WhatsApp Us
+    </a>
+    <br>
+    <a href="tel:+919558789004" class="phone">📞 +91 95587 89004</a>
+
+    <br>
+    <button class="retry-btn" onclick="location.reload()">🔄 Try Again</button>
+  </div>
+</body>
+</html>
