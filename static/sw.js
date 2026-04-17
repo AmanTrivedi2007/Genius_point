@@ -84,7 +84,7 @@ self.addEventListener("fetch", (event) => {
           if (cached) return cached;
 
           // Fallback to homepage
-          const fallback = await caches.match("/index.html");
+          const fallback = await caches.match("/");
           if (fallback) return fallback;
 
           // Offline page
